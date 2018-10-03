@@ -26,7 +26,7 @@ module Pageflow
         <<-SQL
           INNER JOIN pageflow_memberships account_memberships ON
           account_memberships.user_id = users.id AND
-          account_memberships.entity_type = "Pageflow::Account"
+          account_memberships.entity_type = 'Pageflow::Account'
         SQL
       end
 
@@ -36,7 +36,7 @@ module Pageflow
           account_manager_memberships.entity_type = account_memberships.entity_type AND
           account_manager_memberships.entity_id = account_memberships.entity_id AND
           account_manager_memberships.user_id = :user_id AND
-          account_manager_memberships.role = "manager"
+          account_manager_memberships.role = 'manager'
         SQL
       end
     end

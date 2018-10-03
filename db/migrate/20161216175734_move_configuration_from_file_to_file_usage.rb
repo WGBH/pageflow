@@ -26,7 +26,7 @@ class MoveConfigurationFromFileToFileUsage < ActiveRecord::Migration
           UPDATE pageflow_file_usages
           INNER JOIN #{table_name} ON
             pageflow_file_usages.file_id = #{table_name}.id AND
-            pageflow_file_usages.file_type = "#{type_name}"
+            pageflow_file_usages.file_type = '#{type_name}'
           SET pageflow_file_usages.configuration = #{table_name}.configuration
         SQL
       end

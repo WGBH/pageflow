@@ -21,12 +21,12 @@ module Pageflow
       private
 
       def publisher_memberships_for_accounts(user, accounts_ids)
-        sanitize_sql_array(['LEFT OUTER JOIN pageflow_memberships ON ' \
-                            'pageflow_memberships.user_id = :user_id AND ' \
-                            'pageflow_themings.account_id IN (:accounts_ids) AND ' \
-                            'pageflow_memberships.entity_id IN (:accounts_ids) AND ' \
-                            'pageflow_memberships.entity_type = "Pageflow::Account" AND ' \
-                            'pageflow_memberships.role IN ("publisher", "manager")',
+        sanitize_sql_array(["LEFT OUTER JOIN pageflow_memberships ON " \
+                            "pageflow_memberships.user_id = :user_id AND " \
+                            "pageflow_themings.account_id IN (:accounts_ids) AND " \
+                            "pageflow_memberships.entity_id IN (:accounts_ids) AND " \
+                            "pageflow_memberships.entity_type = 'Pageflow::Account' AND " \
+                            "pageflow_memberships.role IN ('publisher', 'manager')",
                             user_id: user.id, accounts_ids: accounts_ids])
       end
 
