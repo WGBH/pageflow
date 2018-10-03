@@ -1,3 +1,4 @@
+# This migration comes from pageflow (originally 20160504093145)
 class ReplaceRoleAndAccountOnUser < ActiveRecord::Migration
   def up
     add_account_member_membership_for_each_user
@@ -25,18 +26,34 @@ class ReplaceRoleAndAccountOnUser < ActiveRecord::Migration
   end
 
   def update_membership_role_to_manager_for_each_account_manager
-    execute(<<-SQL)
-      UPDATE pageflow_memberships INNER JOIN users ON
-      pageflow_memberships.user_id = users.id AND
-      pageflow_memberships.entity_type = 'Pageflow::Account' AND
-      users.role = 'account_manager'
-      SET pageflow_memberships.role = 'manager'
-    SQL
+# POSTGRES
+    if Regexp.new("postgres", Regexp::IGNORECASE).match(ActiveRecord::Base.connection.adapter_name)
+      sql = <<-SQL
+        UPDATE pageflow_memberships
+        SET role = 'manager'
+        FROM users
+        WHERE
+          pageflow_memberships.user_id = users.id AND
+          pageflow_memberships.entity_type = 'Pageflow::Account' AND
+          users.role = 'account_manager'
+      SQL
+
+# MYSQL
+    elsif Regexp.new("mysql", Regexp::IGNORECASE).match(ActiveRecord::Base.connection.adapter_name)    
+      sql = <<-SQL
+        UPDATE pageflow_memberships INNER JOIN users ON
+        pageflow_memberships.user_id = users.id AND
+        pageflow_memberships.entity_type = 'Pageflow::Account' AND
+        users.role = 'account_manager'
+        SET pageflow_memberships.role = 'manager'
+      SQL
+    end
+    execute(sql)
   end
 
   def set_admin_to_true_for_each_admin
     execute(<<-SQL)
-      UPDATE users SET users.admin = TRUE WHERE users.role = 'admin'
+      UPDATE users SET admin = TRUE WHERE role = 'admin'
     SQL
   end
 end
